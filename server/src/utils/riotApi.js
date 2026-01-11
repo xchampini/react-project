@@ -9,7 +9,10 @@ export const RIOT_URLS = {
   europe: 'https://europe.api.riotgames.com',
   asia: 'https://asia.api.riotgames.com',
   sea: 'https://sea.api.riotgames.com',
-  
+};
+
+// Riot API platform URLs
+export const PLATFORM_URLS = {
   // Platform routing values (for summoner-v4, league-v4, etc.)
   na1: 'https://na1.api.riotgames.com',
   br1: 'https://br1.api.riotgames.com',
@@ -27,7 +30,7 @@ export const RIOT_URLS = {
   th2: 'https://th2.api.riotgames.com',
   tw2: 'https://tw2.api.riotgames.com',
   vn2: 'https://vn2.api.riotgames.com',
-};
+}
 
 // Map platforms to their regional routing values
 export const PLATFORM_TO_REGION = {
@@ -106,9 +109,8 @@ export async function getAccountByRiotId(gameName, tagLine, region = 'americas')
  * @param {string} platform - Platform routing value (na1, euw1, etc.)
  * @returns {Promise<Object>} - Summoner data
  */
-export async function getSummonerByPuuid(puuid, platform = 'oc1') {
-  // TODO: Fix platform, it's going to assume everyone's from OCE atm
-  const url = `https://oc1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/${puuid}`;
+export async function getSummonerByPuuid(puuid, platform = 'na1') {
+  const url = `${PLATFORM_URLS[platform]}/lol/summoner/v4/summoners/by-puuid/${puuid}`;
   return riotApiCall(url);
 }
 
@@ -143,7 +145,7 @@ export async function getMatchById(matchId, region = 'americas') {
  * @returns {Promise<Object[]>} - Array of ranked league entries
  */
 export async function getRankedInfo(summonerId, platform = 'na1') {
-  const url = `${RIOT_URLS[platform]}/lol/league/v4/entries/by-summoner/${summonerId}`;
+  const url = `${PLATFORM_URLS[platform]}/lol/league/v4/entries/by-summoner/${summonerId}`;
   return riotApiCall(url);
 }
 

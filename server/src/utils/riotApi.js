@@ -1,55 +1,55 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 dotenv.config();
 
 // Riot API base URLs
 export const RIOT_URLS = {
   // Regional routing values (for account-v1 and match-v5)
-  americas: 'https://americas.api.riotgames.com',
-  europe: 'https://europe.api.riotgames.com',
-  asia: 'https://asia.api.riotgames.com',
-  sea: 'https://sea.api.riotgames.com',
+  americas: "https://americas.api.riotgames.com",
+  europe: "https://europe.api.riotgames.com",
+  asia: "https://asia.api.riotgames.com",
+  sea: "https://sea.api.riotgames.com",
 };
 
 // Riot API platform URLs
 export const PLATFORM_URLS = {
   // Platform routing values (for summoner-v4, league-v4, etc.)
-  na1: 'https://na1.api.riotgames.com',
-  br1: 'https://br1.api.riotgames.com',
-  la1: 'https://la1.api.riotgames.com',
-  la2: 'https://la2.api.riotgames.com',
-  euw1: 'https://euw1.api.riotgames.com',
-  eun1: 'https://eun1.api.riotgames.com',
-  tr1: 'https://tr1.api.riotgames.com',
-  ru: 'https://ru.api.riotgames.com',
-  kr: 'https://kr.api.riotgames.com',
-  jp1: 'https://jp1.api.riotgames.com',
-  oc1: 'https://oc1.api.riotgames.com',
-  ph2: 'https://ph2.api.riotgames.com',
-  sg2: 'https://sg2.api.riotgames.com',
-  th2: 'https://th2.api.riotgames.com',
-  tw2: 'https://tw2.api.riotgames.com',
-  vn2: 'https://vn2.api.riotgames.com',
-}
+  na1: "https://na1.api.riotgames.com",
+  br1: "https://br1.api.riotgames.com",
+  la1: "https://la1.api.riotgames.com",
+  la2: "https://la2.api.riotgames.com",
+  euw1: "https://euw1.api.riotgames.com",
+  eun1: "https://eun1.api.riotgames.com",
+  tr1: "https://tr1.api.riotgames.com",
+  ru: "https://ru.api.riotgames.com",
+  kr: "https://kr.api.riotgames.com",
+  jp1: "https://jp1.api.riotgames.com",
+  oc1: "https://oc1.api.riotgames.com",
+  ph2: "https://ph2.api.riotgames.com",
+  sg2: "https://sg2.api.riotgames.com",
+  th2: "https://th2.api.riotgames.com",
+  tw2: "https://tw2.api.riotgames.com",
+  vn2: "https://vn2.api.riotgames.com",
+};
 
 // Map platforms to their regional routing values
 export const PLATFORM_TO_REGION = {
-  na1: 'americas',
-  br1: 'americas',
-  la1: 'americas',
-  la2: 'americas',
-  euw1: 'europe',
-  eun1: 'europe',
-  tr1: 'europe',
-  ru: 'europe',
-  kr: 'asia',
-  jp1: 'asia',
-  oc1: 'sea',
-  ph2: 'sea',
-  sg2: 'sea',
-  th2: 'sea',
-  tw2: 'sea',
-  vn2: 'sea',
+  na1: "americas",
+  br1: "americas",
+  la1: "americas",
+  la2: "americas",
+  euw1: "europe",
+  eun1: "europe",
+  tr1: "europe",
+  ru: "europe",
+  kr: "asia",
+  jp1: "asia",
+  oc1: "sea",
+  ph2: "sea",
+  sg2: "sea",
+  th2: "sea",
+  tw2: "sea",
+  vn2: "sea",
 };
 
 const RIOT_API_KEY = process.env.RIOT_API_KEY;
@@ -61,18 +61,19 @@ const RIOT_API_KEY = process.env.RIOT_API_KEY;
  * @returns {Promise<Object>} - The API response data
  */
 export async function riotApiCall(url, options = {}) {
+  console.log(url);
   try {
     const response = await fetch(url, {
       ...options,
       headers: {
-        'X-Riot-Token': RIOT_API_KEY,
+        "X-Riot-Token": RIOT_API_KEY,
         ...options.headers,
       },
     });
 
     // Handle rate limiting
     if (response.status === 429) {
-      const retryAfter = response.headers.get('Retry-After') || 1;
+      const retryAfter = response.headers.get("Retry-After") || 1;
       throw new Error(`Rate limited. Retry after ${retryAfter} seconds`);
     }
 
@@ -80,13 +81,13 @@ export async function riotApiCall(url, options = {}) {
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(
-        `Riot API error: ${response.status} ${response.statusText} - ${errorText}`
+        `Riot API error: ${response.status} ${response.statusText} - ${errorText}`,
       );
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Riot API call failed:', error.message);
+    console.error("Riot API call failed:", error.message);
     throw error;
   }
 }
@@ -98,7 +99,11 @@ export async function riotApiCall(url, options = {}) {
  * @param {string} region - Regional routing value (americas, europe, asia, sea)
  * @returns {Promise<Object>} - Account data including puuid
  */
-export async function getAccountByRiotId(gameName, tagLine, region = 'americas') {
+export async function getAccountByRiotId(
+  gameName,
+  tagLine,
+  region = "americas",
+) {
   const url = `${RIOT_URLS[region]}/riot/account/v1/accounts/by-riot-id/${encodeURIComponent(gameName)}/${encodeURIComponent(tagLine)}`;
   return riotApiCall(url);
 }
@@ -109,7 +114,7 @@ export async function getAccountByRiotId(gameName, tagLine, region = 'americas')
  * @param {string} platform - Platform routing value (na1, euw1, etc.)
  * @returns {Promise<Object>} - Summoner data
  */
-export async function getSummonerByPuuid(puuid, platform = 'na1') {
+export async function getSummonerByPuuid(puuid, platform = "na1") {
   const url = `${PLATFORM_URLS[platform]}/lol/summoner/v4/summoners/by-puuid/${puuid}`;
   return riotApiCall(url);
 }
@@ -117,12 +122,18 @@ export async function getSummonerByPuuid(puuid, platform = 'na1') {
 /**
  * Get match IDs for a player
  * @param {string} puuid - The player's PUUID
- * @param {string} region - Regional routing value
+ * @param {string} platform
  * @param {number} start - Starting index
  * @param {number} count - Number of matches to retrieve
  * @returns {Promise<string[]>} - Array of match IDs
  */
-export async function getMatchIdsByPuuid(puuid, region = 'americas', start = 0, count = 20) {
+export async function getMatchIdsByPuuid(
+  puuid,
+  platform = "na1",
+  start = 0,
+  count = 20,
+) {
+  const region = PLATFORM_TO_REGION[platform];
   const url = `${RIOT_URLS[region]}/lol/match/v5/matches/by-puuid/${puuid}/ids?start=${start}&count=${count}`;
   return riotApiCall(url);
 }
@@ -130,22 +141,24 @@ export async function getMatchIdsByPuuid(puuid, region = 'americas', start = 0, 
 /**
  * Get match details by match ID
  * @param {string} matchId - The match ID
- * @param {string} region - Regional routing value
+ * @param {string} platform
  * @returns {Promise<Object>} - Full match data
  */
-export async function getMatchById(matchId, region = 'americas') {
+export async function getMatchById(matchId, platform = "na1") {
+  const region = PLATFORM_TO_REGION[platform];
   const url = `${RIOT_URLS[region]}/lol/match/v5/matches/${matchId}`;
   return riotApiCall(url);
 }
 
 /**
  * Get ranked information for a summoner
- * @param {string} summonerId - The summoner's encrypted ID
- * @param {string} platform - Platform routing value
+ * @param {string} puuid - The summoner's encrypted ID
+ * @param {string} platform
  * @returns {Promise<Object[]>} - Array of ranked league entries
  */
-export async function getRankedInfo(summonerId, platform = 'na1') {
-  const url = `${PLATFORM_URLS[platform]}/lol/league/v4/entries/by-summoner/${summonerId}`;
+export async function getRankedInfo(puuid, platform = "na1") {
+  const region = PLATFORM_TO_REGION[platform];
+  const url = `${RIOT_URLS[region]}/lol/league/v4/entries/by-puuid/${puuid}`;
   return riotApiCall(url);
 }
 
@@ -158,7 +171,7 @@ export async function getRankedInfo(summonerId, platform = 'na1') {
  */
 export function calculateKDA(kills, deaths, assists) {
   if (deaths === 0) {
-    return 'Perfect';
+    return "Perfect";
   }
   return ((kills + assists) / deaths).toFixed(2);
 }
@@ -171,7 +184,7 @@ export function calculateKDA(kills, deaths, assists) {
 export function formatGameDuration(seconds) {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
-  return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 }
 
 /**
@@ -181,17 +194,17 @@ export function formatGameDuration(seconds) {
  */
 export function getQueueType(queueId) {
   const queueTypes = {
-    420: 'Ranked Solo/Duo',
-    440: 'Ranked Flex',
-    450: 'ARAM',
-    400: 'Normal Draft',
-    430: 'Normal Blind',
-    700: 'Clash',
-    900: 'URF',
-    1020: 'One For All',
-    1700: 'Arena',
+    420: "Ranked Solo/Duo",
+    440: "Ranked Flex",
+    450: "ARAM",
+    400: "Normal Draft",
+    430: "Normal Blind",
+    700: "Clash",
+    900: "URF",
+    1020: "One For All",
+    1700: "Arena",
   };
-  return queueTypes[queueId] || 'Unknown Queue';
+  return queueTypes[queueId] || "Unknown Queue";
 }
 
 /**
@@ -201,10 +214,10 @@ export function getQueueType(queueId) {
  * @returns {Object} - Player's stats for that match
  */
 export function extractPlayerStats(match, puuid) {
-  const participant = match.info.participants.find(p => p.puuid === puuid);
-  
+  const participant = match.info.participants.find((p) => p.puuid === puuid);
+
   if (!participant) {
-    throw new Error('Player not found in match');
+    throw new Error("Player not found in match");
   }
 
   return {
@@ -220,12 +233,21 @@ export function extractPlayerStats(match, puuid) {
     kills: participant.kills,
     deaths: participant.deaths,
     assists: participant.assists,
-    kda: calculateKDA(participant.kills, participant.deaths, participant.assists),
+    kda: calculateKDA(
+      participant.kills,
+      participant.deaths,
+      participant.assists,
+    ),
     gold: participant.goldEarned,
     cs: participant.totalMinionsKilled + participant.neutralMinionsKilled,
-    csPerMinute: ((participant.totalMinionsKilled + participant.neutralMinionsKilled) / (match.info.gameDuration / 60)).toFixed(1),
+    csPerMinute: (
+      (participant.totalMinionsKilled + participant.neutralMinionsKilled) /
+      (match.info.gameDuration / 60)
+    ).toFixed(1),
     damage: participant.totalDamageDealtToChampions,
-    damagePerMinute: Math.round(participant.totalDamageDealtToChampions / (match.info.gameDuration / 60)),
+    damagePerMinute: Math.round(
+      participant.totalDamageDealtToChampions / (match.info.gameDuration / 60),
+    ),
     visionScore: participant.visionScore,
     items: [
       participant.item0,
@@ -235,7 +257,7 @@ export function extractPlayerStats(match, puuid) {
       participant.item4,
       participant.item5,
       participant.item6,
-    ].filter(item => item !== 0),
+    ].filter((item) => item !== 0),
     summonerSpells: [participant.summoner1Id, participant.summoner2Id],
     primaryRune: participant.perks?.styles[0]?.selections[0]?.perk,
     secondaryRune: participant.perks?.styles[1]?.style,

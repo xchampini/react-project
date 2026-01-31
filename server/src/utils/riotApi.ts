@@ -165,13 +165,11 @@ export async function getMatchById(matchId: string, platform: string = 'na1') {
  * @returns {Promise<Object[]>} - Array of ranked league entries
  */
 export async function getRankedInfo(puuid: string, platform: string = 'na1') {
-  const region = PLATFORM_TO_REGION[platform];
-
-  if (!region) {
+  if (!platform) {
     throw new Error(`Invalid platform: ${platform}`);
   }
 
-  const url = `${RIOT_URLS[region]}/lol/league/v4/entries/by-puuid/${puuid}`;
+  const url = `${PLATFORM_URLS[platform]}/lol/league/v4/entries/by-puuid/${puuid}`;
   return riotApiCall(url);
 }
 

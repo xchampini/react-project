@@ -1,0 +1,22 @@
+.inputGroupContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card {
+  padding: 20px;
+  width: 500px;
+  border-radius: 10px;
+  border: 1px solid #9f86c0;
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.buttonContainer {
+  padding-top: 20px;
+  justify-self: anchor-center;
+}

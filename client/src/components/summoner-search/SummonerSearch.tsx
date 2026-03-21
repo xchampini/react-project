@@ -21,6 +21,7 @@ function SummonerSearch() {
       return data;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to fetch summoner';
+      console.log(message);
       throw error;
     }
   };

@@ -234,7 +234,7 @@ export function extractPlayerStats(match: any, puuid: string) {
 
   return {
     matchId: match.metadata.matchId,
-    gameCreation: match.info.gameCreation,
+    gameCreation: new Date(match.info.gameCreation),
     gameDuration: match.info.gameDuration,
     gameMode: match.info.gameMode,
     queueId: match.info.queueId,

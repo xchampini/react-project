@@ -1,0 +1,7 @@
+li.win::marker {
+  color: green;
+}
+
+li.loss::marker {
+  color: red;
+}

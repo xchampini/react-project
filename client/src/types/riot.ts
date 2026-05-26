@@ -49,7 +49,7 @@ export type ChampionSummary = {
 
 export type RecentMatch = {
   matchId: string;
-  gameCreation: number;
+  gameCreation: Date;
   gameDuration: number;
   gameMode: string;
   queueId: number;

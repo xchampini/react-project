@@ -1,3 +1,5 @@
+import type { MatchHistoryResponse } from '../types/riot';
+
 // TODO: look how to actually store api url, shouldnt be localhost
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
@@ -31,8 +33,8 @@ class RiotApiClient {
     platform: string,
     region: string,
     matches: number
-  ): Promise<unknown> {
-    return this.request<unknown>(
+  ): Promise<MatchHistoryResponse> {
+    return this.request<MatchHistoryResponse>(
       `/match-history/${encodeURIComponent(gameName)}/${encodeURIComponent(gameTag)}?region=${region}&platform=${platform}&count=${matches}`
     );
   }

@@ -1,8 +1,17 @@
-import { useState, type FormEvent } from 'react';
+import { useState } from 'react';
 import styles from './SummonerSearch.module.css';
-import { riotApi } from '../../api/riotClientApi';
 
-function SummonerSearch() {
+function SummonerSearch({
+  onSubmit,
+}: {
+  onSubmit: (data: {
+    gameName: string;
+    gameTag: string;
+    platform: string;
+    region: string;
+    matches: number;
+  }) => void;
+}) {
   const [gameName, setGameName] = useState('');
   const [gameTag, setGameTag] = useState('');
   const [platform, setPlatform] = useState('oc1');
@@ -12,18 +21,10 @@ function SummonerSearch() {
   //   const [loading, setLoading] = useState(false);
   //   const [error, setError] = useState<string | null>(null);
   //   const [summoner, setSummoner] = useState<SummonerDTO | null>(null);
-  const submitForm = async (event: FormEvent) => {
+  const submitForm = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    try {
-      const data = await riotApi.getMatchHistory(gameName, gameTag, platform, region, matches);
-      console.log(data);
-      return data;
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to fetch summoner';
-      console.log(message);
-      throw error;
-    }
+    onSubmit({ gameName, gameTag, platform, region, matches });
   };
 
   return (

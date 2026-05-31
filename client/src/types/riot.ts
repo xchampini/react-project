@@ -14,6 +14,18 @@ export type RankedEntry = {
   wins: number;
   losses: number;
   winRate: string;
+  hotStreak: boolean;
+  veteran: boolean;
+  freshBlood: boolean;
+  inactive: boolean;
+  miniSeries: MiniSeries | null;
+};
+
+export type MiniSeries = {
+  target: number;
+  wins: number;
+  losses: number;
+  progress: string;
 };
 
 export type AggregateStats = {

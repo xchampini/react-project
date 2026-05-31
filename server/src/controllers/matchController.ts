@@ -73,6 +73,18 @@ type RankedEntry = {
   leaguePoints: number;
   wins: number;
   losses: number;
+  hotStreak: boolean;
+  veteran: boolean;
+  freshBlood: boolean;
+  inactive: boolean;
+  miniSeries: MiniSeries | null;
+};
+
+type MiniSeries = {
+  target: number;
+  wins: number;
+  losses: number;
+  progress: string;
 };
 
 type PlayerStats = ReturnType<typeof extractPlayerStats>;
@@ -208,9 +220,7 @@ export async function getMatchHistory(
     console.log(`Found ${matchIds.length} matches`);
 
     // 5. Get match details for each match
-    const matchDetailsPromises = matchIds.map((matchId: string) =>
-      getMatchById(matchId, platform)
-    );
+    const matchDetailsPromises = matchIds.map((matchId: string) => getMatchById(matchId, platform));
     const matches = (await Promise.all(matchDetailsPromises)) as MatchMetadata[];
     console.log(`Fetched ${matches.length} match details`);
 
@@ -305,6 +315,11 @@ export async function getMatchHistory(
             wins: league.wins,
             losses: league.losses,
             winRate: ((league.wins / (league.wins + league.losses)) * 100).toFixed(1),
+            hotStreak: league.hotStreak,
+            veteran: league.veteran,
+            freshBlood: league.freshBlood,
+            inactive: league.inactive,
+            miniSeries: league.miniSeries,
           }))
         : [],
       stats: {

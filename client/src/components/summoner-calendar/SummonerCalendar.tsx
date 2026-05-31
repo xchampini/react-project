@@ -23,16 +23,17 @@ function SummonerCalendar({ summonerData, dataDragonAssets }: SummonerCalendarPr
     }
 
     const champion = Object.values(dataDragonAssets.champions).find(
-      (championAsset) => Number(championAsset.key) === match.championId,
+      (championAsset) => Number(championAsset.key) === match.championId
     );
 
-    return champion
-      ? getChampionIconUrl(dataDragonAssets.version, champion.image.full)
-      : null;
+    return champion ? getChampionIconUrl(dataDragonAssets.version, champion.image.full) : null;
   };
 
   return (
     <>
+      <div>Matches: {summonerData.recentMatches.length}</div>
+      <div>Wins: {summonerData.recentMatches.filter((m) => m.win).length}</div>
+      <div>Losses: {summonerData.recentMatches.filter((m) => !m.win).length}</div>
       {Object.entries(matchesByDate).map(([date, matches]) => (
         <div key={date} className={styles['day-block']}>
           <h2>

@@ -47,10 +47,12 @@ function App() {
     <>
       <SummonerSearch onSubmit={handleSummonerSearch}></SummonerSearch>
       {summonerData && (
-        <SummonerDetail
-          summonerData={summonerData}
-          dataDragonAssets={dataDragonAssets}
-        ></SummonerDetail>
+        <div className="summoner-detail-container">
+          <SummonerDetail
+            summonerData={summonerData}
+            dataDragonAssets={dataDragonAssets}
+          ></SummonerDetail>
+        </div>
       )}
     </>
   );

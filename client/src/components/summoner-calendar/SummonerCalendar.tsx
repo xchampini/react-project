@@ -2,7 +2,7 @@ import { getChampionIconUrl } from '../../api/dataDragonApi';
 import type { DataDragonAssetCache } from '../../types/dataDragon';
 import type { MatchHistoryResponse, RecentMatch } from '../../types/riot';
 import styles from './SummonerCalendar.module.css';
-
+import { formatDistanceToNow } from 'date-fns';
 type SummonerCalendarProps = {
   summonerData: MatchHistoryResponse;
   dataDragonAssets: DataDragonAssetCache | null;
@@ -61,10 +61,7 @@ function SummonerCalendar({ summonerData, dataDragonAssets }: SummonerCalendarPr
                     <div className={styles['match-details']}>
                       <span>{match.queueType}</span>
                       <div>
-                        {new Date(match.gameCreation).toLocaleTimeString([], {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
+                        {formatDistanceToNow(new Date(match.gameCreation), { addSuffix: true })}
                       </div>
                       <span>
                         {match.champion} - KDA: {match.kills}/{match.deaths}/{match.assists}

@@ -17,19 +17,12 @@ function SummonerDetail({ summonerData, dataDragonAssets }: SummonerDetailProps)
   return (
     <>
       {profileIconUrl && <img src={profileIconUrl} alt="Profile Icon" />}
-      <h1>{summonerData.summoner.gameName}</h1>
-      <p>Tag: {summonerData.summoner.tagLine}</p>
+      <h1 className={styles['profile-name']}>
+        {summonerData.summoner.gameName}{' '}
+        <span className={styles['tagline']}>#{summonerData.summoner.tagLine}</span>
+      </h1>
       <p>Level: {summonerData.summoner.summonerLevel}</p>
 
-      <h2>Recent Matches</h2>
-      <ul>
-        {summonerData.recentMatches.map((match) => (
-          <li key={match.matchId} className={match.win ? styles.win : styles.loss}>
-            {match.gameMode} - {match.champion} - {match.win ? 'Win' : 'Loss'} - KDA: {match.kills}/
-            {match.deaths}/{match.assists}
-          </li>
-        ))}
-      </ul>
       <SummonerCalendar summonerData={summonerData} />
     </>
   );

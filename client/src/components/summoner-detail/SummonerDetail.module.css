@@ -5,3 +5,12 @@ li.win::marker {
 li.loss::marker {
   color: red;
 }
+
+.profile-name {
+  font-weight: bold;
+}
+
+.tagline {
+  font-size: 0.8em;
+  color: gray;
+}

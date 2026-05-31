@@ -23,7 +23,7 @@ function SummonerDetail({ summonerData, dataDragonAssets }: SummonerDetailProps)
       </h1>
       <p>Level: {summonerData.summoner.summonerLevel}</p>
 
-      <SummonerCalendar summonerData={summonerData} />
+      <SummonerCalendar summonerData={summonerData} dataDragonAssets={dataDragonAssets} />
     </>
   );
 }

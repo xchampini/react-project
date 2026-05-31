@@ -53,6 +53,52 @@ export const PLATFORM_TO_REGION: Record<string, string> = {
 };
 
 const RIOT_API_KEY = process.env.RIOT_API_KEY;
+const RIOT_SHORT_WINDOW_LIMIT = 20;
+const RIOT_SHORT_WINDOW_MS = 1_000;
+const RIOT_RATE_LIMIT_BUFFER_MS = 25;
+const RIOT_MAX_RATE_LIMIT_RETRIES = 3;
+
+let riotRateLimitQueue = Promise.resolve();
+const riotRequestTimestamps: number[] = [];
+
+const wait = (milliseconds: number) =>
+  new Promise((resolve) => {
+    setTimeout(resolve, milliseconds);
+  });
+
+const waitForRiotRateLimitSlot = async () => {
+  while (true) {
+    const now = Date.now();
+    const windowStart = now - RIOT_SHORT_WINDOW_MS;
+
+    while (
+      riotRequestTimestamps.length > 0 &&
+      riotRequestTimestamps[0] !== undefined &&
+      riotRequestTimestamps[0] <= windowStart
+    ) {
+      riotRequestTimestamps.shift();
+    }
+
+    if (riotRequestTimestamps.length < RIOT_SHORT_WINDOW_LIMIT) {
+      riotRequestTimestamps.push(now);
+      return;
+    }
+
+    const oldestRequestTimestamp = riotRequestTimestamps[0];
+    if (oldestRequestTimestamp === undefined) {
+      continue;
+    }
+
+    const nextSlotAt = oldestRequestTimestamp + RIOT_SHORT_WINDOW_MS;
+    await wait(nextSlotAt - now + RIOT_RATE_LIMIT_BUFFER_MS);
+  }
+};
+
+const reserveRiotRateLimitSlot = () => {
+  const reservation = riotRateLimitQueue.then(waitForRiotRateLimitSlot);
+  riotRateLimitQueue = reservation.catch(() => {});
+  return reservation;
+};
 
 /**
  * Make a call to the Riot Games API
@@ -60,9 +106,11 @@ const RIOT_API_KEY = process.env.RIOT_API_KEY;
  * @param {Object} options - Additional fetch options
  * @returns {Promise<Object>} - The API response data
  */
-export async function riotApiCall(url: string, options: any = {}) {
+export async function riotApiCall(url: string, options: any = {}, rateLimitRetryCount = 0) {
   console.log(url);
   try {
+    await reserveRiotRateLimitSlot();
+
     const response = await fetch(url, {
       ...options,
       headers: {
@@ -73,8 +121,13 @@ export async function riotApiCall(url: string, options: any = {}) {
 
     // Handle rate limiting
     if (response.status === 429) {
-      const retryAfter = response.headers.get('Retry-After') || 1;
-      throw new Error(`Rate limited. Retry after ${retryAfter} seconds`);
+      const retryAfter = Number(response.headers.get('Retry-After') || 1);
+      if (rateLimitRetryCount >= RIOT_MAX_RATE_LIMIT_RETRIES) {
+        throw new Error(`Rate limited after ${RIOT_MAX_RATE_LIMIT_RETRIES} retries`);
+      }
+
+      await wait(retryAfter * 1_000);
+      return riotApiCall(url, options, rateLimitRetryCount + 1);
     }
 
     // Handle other errors

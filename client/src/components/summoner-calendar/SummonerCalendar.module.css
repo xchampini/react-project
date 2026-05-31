@@ -1,7 +1,47 @@
-li.win::marker {
-  color: green;
+.day-block {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 1em;
+  margin-bottom: 1em;
 }
 
-li.loss::marker {
-  color: red;
+ul {
+  padding-left: 0;
+}
+
+li {
+  list-style: none;
+  padding: 0.5em 0;
+
+  &:first-child {
+    padding-top: 0;
+  }
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+}
+
+li > div {
+  padding: 1em;
+  border-radius: 10px;
+}
+
+li.win > div {
+  background-color: rgba(0, 255, 0, 0.1);
+}
+
+li.loss > div {
+  background-color: rgba(255, 0, 0, 0.1);
+}
+
+h2 {
+  margin-top: 0;
+}
+
+.day-summary {
+  display: flex;
+  gap: 1em;
+  font-size: 0.9em;
+  color: #bebebe;
 }

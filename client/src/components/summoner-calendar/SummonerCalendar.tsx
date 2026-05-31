@@ -13,19 +13,28 @@ function SummonerCalendar({ summonerData }: { summonerData: MatchHistoryResponse
   return (
     <>
       {Object.entries(matchesByDate).map(([date, matches]) => (
-        <div key={date}>
-          <h3>{date}</h3>
+        <div key={date} className={styles['day-block']}>
+          <h2>
+            {date} - Total Games: {matches.length}
+          </h2>
+          <div className={styles['day-summary']}>
+            <span>Wins: {matches.filter((m) => m.win).length}</span>
+            <span>Losses: {matches.filter((m) => !m.win).length}</span>
+          </div>
+
           <ul>
             {matches.map((match) => (
               <li key={match.matchId} className={match.win ? styles.win : styles.loss}>
                 <div>
-                  <span>
-                    {match.queueType} - {match.champion} - {match.win ? 'Win' : 'Loss'} - KDA:{' '}
-                    {match.kills}/{match.deaths}/{match.assists} -{' '}
+                  <span>{match.queueType}</span>
+                  <div>
                     {new Date(match.gameCreation).toLocaleTimeString([], {
                       hour: '2-digit',
                       minute: '2-digit',
                     })}
+                  </div>
+                  <span>
+                    {match.champion} - KDA: {match.kills}/{match.deaths}/{match.assists}
                   </span>
                 </div>
               </li>

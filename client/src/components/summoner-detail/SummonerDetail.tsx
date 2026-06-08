@@ -3,6 +3,8 @@ import type { DataDragonAssetCache } from '../../types/dataDragon';
 import type { MatchHistoryResponse } from '../../types/riot';
 import SummonerCalendar from '../summoner-calendar/SummonerCalendar';
 import styles from './SummonerDetail.module.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFire } from '@fortawesome/free-solid-svg-icons';
 
 type SummonerDetailProps = {
   summonerData: MatchHistoryResponse;
@@ -34,6 +36,11 @@ function SummonerDetail({ summonerData, dataDragonAssets }: SummonerDetailProps)
       <h1 className={styles['profile-name']}>
         {summonerData.summoner.gameName}{' '}
         <span className={styles['tagline']}>#{summonerData.summoner.tagLine}</span>
+        {summonerData.ranked[0].hotStreak && (
+          <span title="Hot Streak">
+            <FontAwesomeIcon className={styles['hot-streak']} icon={faFire} />
+          </span>
+        )}
       </h1>
 
       <div className={styles['ranked-stats']}>
@@ -42,7 +49,9 @@ function SummonerDetail({ summonerData, dataDragonAssets }: SummonerDetailProps)
           src={rankIconUrl(getRankedInfo('RANKED_SOLO_5x5')?.tier || 'UNRANKED')}
           alt="Rank Icon"
         />
-        <p>{getRankedInfo('RANKED_SOLO_5x5')?.tier}</p>
+        <p>
+          {getRankedInfo('RANKED_SOLO_5x5')?.tier} {getRankedInfo('RANKED_SOLO_5x5')?.rank}
+        </p>
         <p>{getRankedInfo('RANKED_SOLO_5x5')?.leaguePoints} LP</p>
       </div>
 

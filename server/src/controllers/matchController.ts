@@ -345,7 +345,7 @@ export async function getMatchHistory(
           totalGames > 0 ? Math.round(totalWardTakedownsBefore20M / totalGames) : 0,
       },
       champions: topChampions,
-      recentMatches: playerStats.slice(0, 20), // Limit to 20 most recent
+      recentMatches: playerStats,
     };
 
     console.log(`Successfully aggregated data for ${gameName}#${tagLine}`);

@@ -10,6 +10,7 @@ import SummonerDetail from './components/summoner-detail/SummonerDetail';
 function App() {
   const [summonerData, setSummonerData] = useState<MatchHistoryResponse | null>(null);
   const [dataDragonAssets, setDataDragonAssets] = useState<DataDragonAssetCache | null>(null);
+  // var loading = false;
 
   useEffect(() => {
     getDataDragonAssets()
@@ -33,6 +34,8 @@ function App() {
     matches: number;
   }) {
     try {
+      // TODO: add loading state and error handling
+      // loading = true;
       const data = await riotApi.getMatchHistory(gameName, gameTag, platform, region, matches);
       console.log(data);
       setSummonerData(data);
@@ -43,16 +46,27 @@ function App() {
     }
   }
 
+  function handleBackToSearch() {
+    setSummonerData(null);
+  }
+
   return (
     <>
-      <SummonerSearch onSubmit={handleSummonerSearch}></SummonerSearch>
-      {summonerData && (
+      {summonerData ? (
         <div className="summoner-detail-container">
+          <button type="button" onClick={handleBackToSearch}>
+            Back
+          </button>
           <SummonerDetail
             summonerData={summonerData}
             dataDragonAssets={dataDragonAssets}
           ></SummonerDetail>
         </div>
+      ) : (
+        <>
+          <p className="info-text">Search for a summoner to view their match history and stats.</p>
+          <SummonerSearch onSubmit={handleSummonerSearch}></SummonerSearch>
+        </>
       )}
     </>
   );
